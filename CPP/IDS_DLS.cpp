@@ -1,46 +1,57 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
 const ll N = 1e5 + 7;
 
-vector<pair<ll,ll>> arr[N]; // weights ignored for IDS when w = 1
+vector<pair<ll,ll>> arr[N];
 vector<ll> path;
-bool found = false;
+vector<int> vis;
 
-bool dls(ll u, ll goal, ll limit){
+bool dls(ll u, ll goal, ll limit) {
     path.push_back(u);
-    if(u == goal){
-        found = true;
+    vis[u] = 1;
+
+    if (u == goal) {
         return true;
     }
-    if(limit == 0){
+
+    if (limit == 0) {
         path.pop_back();
+        vis[u] = 0;
         return false;
     }
-    for(auto [v, w] : arr[u]){
-        if(find(path.begin(), path.end(), v) == path.end()){
-            if(dls(v, goal, limit - 1)) {
+
+    for (auto [v, w] : arr[u]) {
+        if (!vis[v]) {
+            if (dls(v, goal, limit - 1)) {
                 return true;
             }
         }
     }
+
     path.pop_back();
+    vis[u] = 0;
     return false;
 }
 
-bool ids(ll start, ll goal, ll max_depth){
-    for(ll depth = 0; depth <= max_depth; depth++){
+bool ids(ll start, ll goal, ll max_depth, ll n) {
+    for (ll depth = 0; depth <= max_depth; depth++) {
         path.clear();
-        found = false;
-        if(dls(start, goal, depth)) return true;
+        vis.assign(n, 0);
+        if (dls(start, goal, depth)) {
+            return true;
+        }
     }
     return false;
 }
 
-void solve(){
+void solve() {
     ll n, e;
     cin >> n >> e;
-    for(ll i = 0; i < e; i++){
+
+    for (ll i = 0; i < n; i++) arr[i].clear(); // clear graph before use
+
+    for (ll i = 0; i < e; i++) {
         ll u, v, w;
         cin >> u >> v >> w;
         u--, v--;
@@ -52,10 +63,10 @@ void solve(){
     cin >> start >> goal >> max_depth;
     start--, goal--;
 
-    if(ids(start, goal, max_depth)){
-        cout << "IDS path from " << start+1 << " to " << goal+1 << ": ";
+    if (ids(start, goal, max_depth, n)) {
+        cout << "IDS path from " << start + 1 << " to " << goal + 1 << ": ";
         for (int i = 0; i < path.size(); i++) {
-            std::cout << path[i] + 1 << " \n"[i == path.size() - 1];
+            cout << path[i] + 1 << " \n"[i == path.size() - 1];
         }
     } 
     else {
@@ -63,7 +74,7 @@ void solve(){
     }
 }
 
-int main(){
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     solve();
