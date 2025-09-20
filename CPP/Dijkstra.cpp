@@ -55,7 +55,9 @@ void solve() {
     }
 
     vector<ll> path;
-    for(ll v = goal; v != -1; v = parent[v]) path.push_back(v);
+    for(ll v = goal; v != -1; v = parent[v]) {
+        path.push_back(v);
+    }
     reverse(path.begin(), path.end());
 
     cout << "Shortest path from " << start + 1 << " to " << goal + 1 << " (weight " << dist[goal] << "): ";
