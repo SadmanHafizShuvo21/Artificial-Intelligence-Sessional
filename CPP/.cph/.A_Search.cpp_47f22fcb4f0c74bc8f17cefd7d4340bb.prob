@@ -1,0 +1,1 @@
+{"name":"Local: A_Search","url":"d:\\AI mid\\CPP\\A_Search.cpp","tests":[{"id":1758374171812,"input":"6 6\n1 2 3\n1 3 2\n2 4 1\n2 5 3\n3 6 4\n5 6 1\n5 3 4 6 2 0\n1 6","output":"1 2 5 6 \nGoal!"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\AI mid\\CPP\\A_Search.cpp","group":"local","local":true}
