@@ -15,7 +15,8 @@ void dijkstra(ll start, ll n) {
     pq.push({0, start});
 
     while(!pq.empty()) {
-        auto [d, u] = pq.top(); pq.pop();
+        auto [d, u] = pq.top(); 
+        pq.pop();
         if(d > dist[u]) continue;
 
         for(auto [v, w] : arr[u]) {
@@ -57,10 +58,10 @@ void solve() {
     for(ll v = goal; v != -1; v = parent[v]) path.push_back(v);
     reverse(path.begin(), path.end());
 
-    cout << "Shortest path from " << start + 1 << " to " << goal + 1 
-         << " (weight " << dist[goal] << "): ";
-    for(size_t i = 0; i < path.size(); i++)
+    cout << "Shortest path from " << start + 1 << " to " << goal + 1 << " (weight " << dist[goal] << "): ";
+    for(size_t i = 0; i < path.size(); i++) {
         cout << path[i] + 1 << " \n"[i == path.size() - 1];
+    }
 }
 
 int main() {

@@ -1,40 +1,92 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define pb push_back
-#define F first
-#define S second
+using ll = long long;
 
-vector<pair<int,int>> g[105]; 
-int h[105], gval[105], vis[105];
+const ll N = 1e5 + 7;
+vector<pair<ll,ll>> adj[N]; // {neighbor, weight}
+vector<ll> parent(N, -1);
 
-void astar(int s, int t){
-    for(int i = 0; i < 105; i++) gval[i] = INT_MAX;
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> q;
-    gval[s] = 0;
-    q.push({h[s], s});
-    while(q.size()){
-        int u = q.top().S; q.pop();
-        if(vis[u]) continue;
-        cout << u << " ";
-        if(u == t){ cout << "\nGoal!\n"; return; }
-        vis[u] = 1;
-        for(auto [v, c] : g[u]){
-            int new_g = gval[u] + c;
-            if(new_g < gval[v]){
-                gval[v] = new_g;
-                q.push({gval[v] + h[v], v});
+// A* search from start to goal using heuristic h[]
+vector<ll> a_star(ll start, ll goal, ll n, vector<ll>& h) {
+    vector<ll> g(n, LLONG_MAX); // cost from start to node
+    g[start] = 0;
+
+    using T = pair<ll,ll>; // {f = g+h, node}
+    priority_queue<T, vector<T>, greater<>> pq;
+    pq.push({h[start], start});
+
+    while(!pq.empty()) {
+        auto [f, u] = pq.top(); pq.pop();
+
+        if(u == goal) break;
+
+        for(auto [v, w] : adj[u]) {
+            if(g[v] > g[u] + w) {
+                g[v] = g[u] + w;
+                parent[v] = u;
+                pq.push({g[v] + h[v], v});
             }
         }
     }
+
+    if(g[goal] == LLONG_MAX) return {}; // no path
+
+    vector<ll> path;
+    for(ll v = goal; v != -1; v = parent[v]) path.push_back(v);
+    reverse(path.begin(), path.end());
+    return path;
 }
 
-int main(){
-    int n, m; cin >> n >> m;
-    while(m--){
-        int u, v, c; cin >> u >> v >> c;
-        g[u].pb({v, c});
+void solve() {
+    ll n, e;
+    cin >> n >> e;
+
+    for(ll i = 0; i < n; i++) {
+        adj[i].clear();
     }
-    for(int i = 1; i <= n; i++) cin >> h[i];
-    int s, t; cin >> s >> t;
-    astar(s, t);
+
+    while (e--) {
+        ll u, v, w;
+        cin >> u >> v >> w;
+        u--, v--;
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w}); // remove if directed
+    }
+
+    ll start, goal;
+    cin >> start >> goal;
+    start--, goal--;
+
+    vector<ll> h(n, 0); // heuristic array
+    for(ll i = 0; i < n; i++) {
+        cin >> h[i]; // optional: input heuristics
+    }
+
+    vector<ll> path = a_star(start, goal, n, h);
+    if(path.empty()) {
+        cout << "No path found\n";
+        return;
+    }
+
+    ll total_cost = 0;
+    for(int i = 1; i < path.size(); i++) {
+        ll u = path[i - 1]; 
+        ll v = path[i];
+        for(auto [to, w] : adj[u]) {
+            if(to == v) { 
+                total_cost += w; 
+                break; 
+            }
+        }
+    }
+
+    cout << "A* path from " << start + 1 << " to " << goal + 1 << " (weight " << total_cost << "): ";
+    for(int i = 0; i < path.size(); i++)
+        cout << path[i] + 1 << " \n"[i == path.size() - 1];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
 }
