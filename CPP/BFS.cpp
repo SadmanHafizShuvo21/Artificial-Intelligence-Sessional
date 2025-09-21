@@ -5,26 +5,26 @@ std::vector<ll> arr[N];
 std::vector<bool> vis(N, false);
 std::vector<ll> res;
 
-void bfs(ll src) {
+void bfs (int n) {
+    vis[n] = true;
     std::queue<ll> q;
-    vis[src] = true;
-    q.push(src);
-    res.push_back(src);
-    while (!q.empty()) {
-        ll u = q.front(); 
+    q.push(n);
+    while(!q.empty()) {
+        ll u = q.front();
         q.pop();
-        for (ll v : arr[u]) {
+        res.push_back(u);
+        for(auto v : arr[u]) {
             if (!vis[v]) {
                 vis[v] = true;
                 q.push(v);
-                res.push_back(v);
             }
         }
     }
 }
 
 void solve() {
-    ll n, m; std::cin >> n >> m;
+    ll n, m; 
+    std::cin >> n >> m;
     while (m--) {
         ll u, v;
         std::cin >> u >> v;
