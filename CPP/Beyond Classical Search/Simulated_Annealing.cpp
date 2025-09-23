@@ -11,14 +11,14 @@ double f(double x) {
 
 int main() {
     srand(time(0));
-    double x = 0, T = 1e3, Tmin = 1e-6, alpha = 0.99;
-    while(T > Tmin) {
+    double x = 0, lim = 1e3, lmin = 1e-6, alpha = 0.99;
+    while(lim > lmin) {
         double nx = x + (rand()%2001 - 1000)/1000.0; // [-1,1] random step
         double dE = f(nx) - f(x);
-        if(dE > 0 || exp(dE/T) > (rand()%1001)/1000.0) {
+        if(dE > 0 || exp(dE/lim) > (rand()%1001)/1000.0) {
             x = nx;
         }
-        T *= alpha;
+        lim *= alpha;
     }
     cout << fixed << setprecision(6) << "Max at x = " << x << ", f(x) = " << f(x) << '\n';
 }
